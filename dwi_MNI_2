@@ -1,0 +1,89 @@
+#!/bin/bash
+
+### Part 2: get rid of overlap between clusters. This approach assigns a voxel to the cluster with the highest probability throughout the whole sample
+## using subtraction
+
+fslmaths Anterior_Sup_Base -sub Anterior_Inf_Base Atlas/Anterior_Sup_Inf
+fslmaths Anterior_Sup_Base -sub Intermediate_Base Atlas/Anterior_Sup_Int
+fslmaths Anterior_Sup_Base -sub Posterior_Base Atlas/Anterior_Sup_Post
+
+fslmaths Atlas/Anterior_Sup_Inf -bin Atlas/Anterior_Sup_Inf_bin
+fslmaths Atlas/Anterior_Sup_Int -bin Atlas/Anterior_Sup_Int_bin
+fslmaths Atlas/Anterior_Sup_Post -bin Atlas/Anterior_Sup_Post_bin
+
+fslmaths Atlas/Anterior_Sup_Inf_bin -add Atlas/Anterior_Sup_Int_bin -add Atlas/Anterior_Sup_Post_bin -thr 3 -bin Atlas/Anterior_Sup_Atlas_bin
+fslmaths Anterior_Sup_Base -mas Atlas/Anterior_Sup_Atlas_bin Atlas/Anterior_Sup_Atlas 
+
+## subtract from anterior-inferior
+
+fslmaths Anterior_Inf_Base -sub Anterior_Sup_Base Atlas/Anterior_Inf_Sup
+fslmaths Anterior_Inf_Base -sub Intermediate_Base Atlas/Anterior_Inf_Int
+fslmaths Anterior_Inf_Base -sub Posterior_Base Atlas/Anterior_Inf_Post
+
+fslmaths Atlas/Anterior_Inf_Sup -bin Atlas/Anterior_Inf_Sup_bin
+fslmaths Atlas/Anterior_Inf_Int -bin Atlas/Anterior_Inf_Int_bin
+fslmaths Atlas/Anterior_Inf_Post -bin Atlas/Anterior_Inf_Post_bin
+
+fslmaths Atlas/Anterior_Inf_Sup_bin -add Atlas/Anterior_Inf_Int_bin -add Atlas/Anterior_Inf_Post_bin -thr 3 -bin Atlas/Anterior_Inf_Atlas_bin
+fslmaths Anterior_Inf_Base -mas Atlas/Anterior_Inf_Atlas_bin Atlas/Anterior_Inf_Atlas 
+
+# subtract from intermediate
+
+fslmaths Intermediate_Base -sub Anterior_Sup_Base Atlas/Intermediate_Sup
+fslmaths Intermediate_Base -sub Anterior_Inf_Base Atlas/Intermediate_Inf
+fslmaths Intermediate_Base -sub Posterior_Base Atlas/Intermediate_Post
+
+fslmaths Atlas/Intermediate_Sup -bin Atlas/Intermediate_Sup_bin
+fslmaths Atlas/Intermediate_Inf -bin Atlas/Intermediate_Inf_bin
+fslmaths Atlas/Intermediate_Post -bin Atlas/Intermediate_Post_bin
+
+fslmaths Atlas/Intermediate_Sup_bin -add Atlas/Intermediate_Inf_bin -add Atlas/Intermediate_Post_bin -thr 3 -bin Atlas/Intermediate_Atlas_bin
+fslmaths Intermediate_Base -mas Atlas/Intermediate_Atlas_bin Atlas/Intermediate_Atlas 
+
+# subtract from posterior
+
+fslmaths Posterior_Base -sub Anterior_Sup_Base Atlas/Posterior_Sup
+fslmaths Posterior_Base -sub Anterior_Inf_Base Atlas/Posterior_Inf
+fslmaths Posterior_Base -sub Tuberal_Base Atlas/Posterior_Int
+
+fslmaths Atlas/Posterior_Sup -bin Atlas/Posterior_Sup_bin
+fslmaths Atlas/Posterior_Inf -bin Atlas/Posterior_Inf_bin
+fslmaths Atlas/Posterior_Int -bin Atlas/Posterior_Int_bin
+
+fslmaths Atlas/Posterior_Sup_bin -add Atlas/Posterior_Inf_bin -add Atlas/Posterior_Int_bin -thr 3 -bin Atlas/Posterior_Atlas_bin
+fslmaths Posterior_Base -mas Atlas/Posterior_Atlas_bin Atlas/Posterior_Atlas 
+
+# remove unneccessary filey
+rm Atlas/Anterior_Inf_Sup.nii.gz
+rm Atlas/Anterior_Inf_Int.nii.gz
+rm Atlas/Anterior_Inf_Post.nii.gz
+
+rm Atlas/Anterior_Sup_Inf.nii.gz
+rm Atlas/Anterior_Sup_Int.nii.gz
+rm Atlas/Anterior_Sup_Post.nii.gz
+
+rm Atlas/Intermediate_Sup.nii.gz
+rm Atlas/Intermediate_Inf.nii.gz
+rm Atlas/Intermediate_Post.nii.gz
+
+rm Atlas/Posterior_Sup.nii.gz
+rm Atlas/Posterior_Inf.nii.gz
+rm Atlas/Posterior_Int.nii.gz
+
+ # create thresholded atlases (exemplary for 20 and 50% threshold). You need to adapt the threshold for your sample size. (n=50 subjects: 50% overlap results in threshold of 25) 
+mkdir Atlas/20_percent
+
+fslmaths Atlas/Anterior_Inf_Atlas -thr 20 Atlas/20_percent/Anterior_Inf_Atlas_20
+fslmaths Atlas/Anterior_Sup_Atlas -thr 20 Atlas/20_percent/Anterior_Sup_Atlas_20
+fslmaths Atlas/Intermediate_Atlas -thr 20 Atlas/20_percent/Intermediate_Atlas_20
+fslmaths Atlas/Posterior_Atlas -thr 20 Atlas/20_percent/Posterior_Atlas_20
+
+mkdir Atlas/50_percent
+
+fslmaths Atlas/Anterior_Inf_Atlas -thr 50 Atlas/50_percent/Anterior_Inf_Atlas_50
+fslmaths Atlas/Anterior_Sup_Atlas -thr 50 Atlas/50_percent/Anterior_Sup_Atlas_50
+fslmaths Atlas/Intermediate_Atlas -thr 50 Atlas/50_percent/Intermediate_Atlas_50
+fslmaths Atlas/Posterior_Atlas -thr 50 Atlas/50_percent/Posterior_Atlas_50
+
+
+
