@@ -15,7 +15,7 @@ fnirt --in=T1w.nii.gz --aff=T1_flirt.mat --cout=T1_fnirt --config=T1_2_MNI152_1m
 applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=T1_brain.nii.gz --warp=T1_fnirt --out=T1_fnirted
 applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Anterior_Inf.nii.gz --warp=T1_fnirt --out=Anterior_Inf_fnirt --interp=nn
 applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Anterior_Sup.nii.gz --warp=T1_fnirt --out=Anterior_Sup_fnirt --interp=nn
-applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Tuberal.nii.gz --warp=T1_fnirt --out=Tuberal_fnirt --interp=nn
+applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Intermediate.nii.gz --warp=T1_fnirt --out=Intermediate_fnirt --interp=nn
 applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Posterior.nii.gz --warp=T1_fnirt --out=Posterior_fnirt --interp=nn
 
 
@@ -24,6 +24,6 @@ applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Pos
  
 fslmaths Anterior_Inf_Base.nii.gz -add Anterior_Inf_fnirt.nii.gz Anterior_Inf_Base.nii.gz
 fslmaths Anterior_Sup_Base.nii.gz -add Anterior_Sup_fnirt.nii.gz Anterior_Sup_Base.nii.gz
-fslmaths Tuberal_Base.nii.gz -add Tuberal_fnirt.nii.gz Tuberal_Base.nii.gz
+fslmaths Intermediate_Base.nii.gz -add Intermediate_fnirt.nii.gz Intermediate_Base.nii.gz
 fslmaths Posterior_Base.nii.gz -add Posterior_fnirt.nii.gz Posterior_Base.nii.gz
 
