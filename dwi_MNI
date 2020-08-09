@@ -1,0 +1,29 @@
+#!/bin/bash
+
+### Script for bringing an individual hypothalamus mask into MNI space for use in the atlas. 
+# This code can be looped through many subjects. 
+# Assuming there are the files: Anterior_Inf.nii.gz, Anterior_Sup.nii.gz, Intermediate.nii.gz, and Posterior.nii.gz in the
+## current folder, as well as a T1-weighted image from that subject.  
+## The config file for the 1mm resolution can be found in 
+# Brain extraction used for registration
+bet T1w.nii.gz T1_brain  -f 0.45 -g 0
+
+# affine registration (12 DOF) 
+flirt -in T1_brain.nii.gz -ref /usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz -out T1_flirt -omat T1_flirt.mat -bins 256 -cost corratio -searchrx -90 90 -searchry -90 90 -searchrz -90 90 -dof 12  -interp trilinear
+fnirt --in=T1w.nii.gz --aff=T1_flirt.mat --cout=T1_fnirt --config=T1_2_MNI152_1mm
+
+applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=T1_brain.nii.gz --warp=T1_fnirt --out=T1_fnirted
+applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Anterior_Inf.nii.gz --warp=T1_fnirt --out=Anterior_Inf_fnirt --interp=nn
+applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Anterior_Sup.nii.gz --warp=T1_fnirt --out=Anterior_Sup_fnirt --interp=nn
+applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Tuberal.nii.gz --warp=T1_fnirt --out=Tuberal_fnirt --interp=nn
+applywarp --ref=/usr/share/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz --in=Posterior.nii.gz --warp=T1_fnirt --out=Posterior_fnirt --interp=nn
+
+
+# for adding up multiple subjects, use an empty image in MNI resolution for each cluster (XX_Base.nii.gz), and add the mask of the cluster for each subject to that image.
+# This way, an atlas file containing values from 1- number of your subjects corresponding to the frequency each voxel is categorized as the cluster, is obtained.
+ 
+fslmaths Anterior_Inf_Base.nii.gz -add Anterior_Inf_fnirt.nii.gz Anterior_Inf_Base.nii.gz
+fslmaths Anterior_Sup_Base.nii.gz -add Anterior_Sup_fnirt.nii.gz Anterior_Sup_Base.nii.gz
+fslmaths Tuberal_Base.nii.gz -add Tuberal_fnirt.nii.gz Tuberal_Base.nii.gz
+fslmaths Posterior_Base.nii.gz -add Posterior_fnirt.nii.gz Posterior_Base.nii.gz
+
