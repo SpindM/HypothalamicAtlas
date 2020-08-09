@@ -44,7 +44,7 @@ fslmaths Intermediate_Base -mas Atlas/Intermediate_Atlas_bin Atlas/Intermediate_
 
 fslmaths Posterior_Base -sub Anterior_Sup_Base Atlas/Posterior_Sup
 fslmaths Posterior_Base -sub Anterior_Inf_Base Atlas/Posterior_Inf
-fslmaths Posterior_Base -sub Tuberal_Base Atlas/Posterior_Int
+fslmaths Posterior_Base -sub Intermediate_Base Atlas/Posterior_Int
 
 fslmaths Atlas/Posterior_Sup -bin Atlas/Posterior_Sup_bin
 fslmaths Atlas/Posterior_Inf -bin Atlas/Posterior_Inf_bin
